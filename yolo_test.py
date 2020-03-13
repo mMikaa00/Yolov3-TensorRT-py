@@ -1,6 +1,4 @@
 import argparse
-# from yolo_tensorrt import YOLO
-from yolo_keras import YOLO
 from utils import detect_video, detect_image
 from PIL import Image
 
@@ -41,26 +39,33 @@ if __name__ == '__main__':
     '''
     parser.add_argument(
         '--model', type=str,
-        help='path to model weight file, default ' + YOLO.get_defaults("model_path")
+        help='path to model weight file'
     )
 
     parser.add_argument(
         '--anchors', type=str,
-        help='path to anchor definitions, default ' + YOLO.get_defaults("anchors_path")
+        help='path to anchor definitions'
     )
 
     parser.add_argument(
         '--classes', type=str,
-        help='path to class definitions, default ' + YOLO.get_defaults("classes_path")
+        help='path to class definitions'
     )
 
     parser.add_argument(
         '--gpu_num', type=int,
-        help='Number of GPU to use, default ' + str(YOLO.get_defaults("gpu_num"))
+        help='Number of GPU to use'
     )
 
     parser.add_argument(
-        "--image_path", nargs='?', type=str, required=False,
+        '--platform', type=str, required=False, default='tensorrt',
+        help='Inference platform: tensorflow or tensorrt'
+    )
+    '''
+    image detection mode
+    '''
+    parser.add_argument(
+        "--image_path", type=str, required=False,
         help="Image input path"
     )
 
@@ -69,10 +74,11 @@ if __name__ == '__main__':
         help="Image output path"
     )
     '''
-    Command line positional arguments -- for video detection mode
+    video detection mode
     '''
+
     parser.add_argument(
-        "--video_path", nargs='?', type=str, required=False,
+        "--video_path", type=str, required=False,
         help="Video input path"
     )
 
@@ -87,6 +93,10 @@ if __name__ == '__main__':
     )
 
     FLAGS = parser.parse_args()
+    if FLAGS.platform == 'tensorrt':
+        from yolo_tensorrt import YOLO
+    else:
+        from yolo_keras import YOLO
 
     if "image_path" in FLAGS:
         """
@@ -101,4 +111,4 @@ if __name__ == '__main__':
         print("live mode")
         detect_video(YOLO(**vars(FLAGS)), 0)
     else:
-        print("Must specify at least video_input_path.  See usage with --help.")
+        print("Must specify at least video_input_path , image_input_path or live.  See usage with --help.")

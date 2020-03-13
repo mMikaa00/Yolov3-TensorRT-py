@@ -65,8 +65,10 @@ def model_path_to_onnx_path(model_path):
 
 # Transforms model path to engine path (e.g. /a/b/c/d.pb -> /a/b/c/d.uff)
 def model_path_to_engine_path(model_path, build_type='fp32'):
-    uff_path = os.path.splitext(model_path)[0] + '_' + build_type + ".engine"
-    return uff_path
+    if os.path.splitext(model_path)[1] == '.engine':
+        return model_path
+    engine_path = os.path.splitext(model_path)[0] + '_' + build_type + ".engine"
+    return engine_path
 
 
 # Converts the TensorFlow frozen graphdef to UFF format using the UFF converter

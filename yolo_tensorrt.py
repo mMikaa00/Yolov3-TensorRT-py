@@ -31,7 +31,7 @@ if gpus:
 
 class YOLO(object):
     _defaults = {
-        "model_path": 'model_data/tensorrt_model/yolo.pb',
+        "model_path": 'model_data/tensorrt_model/yolo_int8.engine',
         "anchors_path": 'model_data/yolo_anchors.txt',
         "calib_img_path": "./dataset/2012_train.txt",
         "classes_num": 80,
@@ -68,18 +68,16 @@ class YOLO(object):
 
     def _build_engine(self):
         model_path = os.path.expanduser(self.model_path)
-        assert model_path.endswith('.pb'), 'Frozen model must be a .pb file.'
 
         TRT_LOGGER = trt.Logger(trt.Logger.INFO)
         # trt.init_libnvinfer_plugins(TRT_LOGGER, '')
-
         # CLIP_PLUGIN_LIBRARY = '/usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so.6.0.1'
-        if not os.path.isfile(self.plugin_path):
-            raise IOError("\n{}\n{}\n{}\n".format(
-                "Failed to load library ({}).".format(self.plugin_path),
-                "Please build the Clip sample plugin.",
-                "For more information, see the included README.md"
-            ))
+        # if not os.path.isfile(self.plugin_path):
+        #     raise IOError("\n{}\n{}\n{}\n".format(
+        #         "Failed to load library ({}).".format(self.plugin_path),
+        #         "Please build the Clip sample plugin.",
+        #         "For more information, see the included README.md"
+        #     ))
 
         # dll = ctypes.CDLL(self.plugin_path)
         # init = dll.initLibNvInferPlugins
@@ -100,8 +98,8 @@ class YOLO(object):
                 network, TRT_LOGGER) as parser:
             builder.max_batch_size = 1
             builder.max_workspace_size = 1 << 28
-            calibration_cache = "model_data/tensorrt_model/yolo_calibration.cache"
             if self.infer_mode == 'int8':
+                calibration_cache = "model_data/tensorrt_model/yolo_calibration.cache"
                 calib = YOLOEntropyCalibrator(self.calib_img_path, calibration_cache, self.model_image_size,
                                               batch_size=8)
                 builder.int8_mode = True
