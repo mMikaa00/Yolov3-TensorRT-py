@@ -115,9 +115,9 @@ class YOLO(object):
                 if not parser.parse(model.read()):
                     raise TypeError("Parser parse failed.")
             # network.get_input(0).shape = (1, 416, 416, 3)
-            print(network.get_output(0).shape)
-            print(network.get_output(1).shape)
-            print(network.get_output(2).shape)
+            # print(network.get_output(0).shape)
+            # print(network.get_output(1).shape)
+            # print(network.get_output(2).shape)
 
             engine = builder.build_cuda_engine(network)
             print(engine.get_binding_name(1))

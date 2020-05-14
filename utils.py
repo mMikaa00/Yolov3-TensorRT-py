@@ -176,18 +176,33 @@ class Drawer(object):
 
 def detect_image(yolo, image_path, output_path=""):
     import cv2
-    image = Image.open(image_path)
-    start = timer()
-    out_boxes, out_scores, out_classes = yolo.detect_image(image)
-    end = timer()
-    print('inference time: {}'.format(end - start))
-    drawer = Drawer()
-    image = drawer.draw_boxes(image, out_boxes, out_scores, out_classes)
-    cv2.namedWindow("result", cv2.WINDOW_NORMAL)
-    cv2.imshow("result", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-    if output_path != "":
-        image.save(output_path)
-    cv2.waitKey(100000)
+    image_path = os.path.abspath(image_path)
+    if os.path.isdir(image_path):
+        files = os.listdir(image_path)
+        images = [os.path.join(image_path, file) for file in files]
+    elif os.path.isfile(image_path):
+        images = image_path
+    else:
+        print('image_path error.')
+        return
+    f = open('./time.txt', 'w')
+    for image_file in images:
+        image = Image.open(image_file)
+        start = timer()
+        out_boxes, out_scores, out_classes = yolo.detect_image(image)
+        end = timer()
+        print('inference time: {:.3f}'.format(end - start))
+        f.write('{:.3f}\n'.format(end - start))
+        drawer = Drawer()
+        image = drawer.draw_boxes(image, out_boxes, out_scores, out_classes)
+        result = np.asarray(image)
+        cv2.namedWindow("result", cv2.WINDOW_NORMAL)
+        cv2.imshow("result", cv2.cvtColor(result, cv2.COLOR_RGB2BGR))
+        if output_path != "":
+            image.save(output_path)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    f.close()
     yolo.close_session()
 
 

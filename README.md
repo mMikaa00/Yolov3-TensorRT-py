@@ -19,7 +19,7 @@ optional:
     onnx 1.6
     
 ### Models
-- Keras moel  
+- Keras model  
 Keras model is borrowed from [keras-yolo3](https://github.com/qqwweee/keras-yolo3), which 
 contains a detailed description about how to generate .h5 model. 
 - TensorRT engine  
@@ -40,7 +40,7 @@ Or Download engine directly(waiting for upload).
 
 ### Run test
 
-    python3 yolo_test.py --live --platform=tensorrt
+    python3 yolo_test.py --model_path=model_data/yolo_int8.engine --live --platform=tensorrt
 
 more detail refer to :
 
@@ -56,5 +56,5 @@ Yolov3-416  | fp32 | COCOval2014 | 0.315 | 0.561 | 0.319
 Yolov3-416  | int8 | COCOval2014 | 0.304 | 0.551 | 0.295
  
 As shown above, fp32 model has completely same result as raw model in twice tests.
-In tensorrt 6.0.1, the fp32 model has little less mAP than raw model, but
+In my previous tensorrt 6.0.1 practice, the fp32 model has little less mAP than raw model, but
 the model is converted through uff.

@@ -38,17 +38,17 @@ if __name__ == '__main__':
     Command line options
     '''
     parser.add_argument(
-        '--model', type=str,
+        '--model_path', type=str,
         help='path to model weight file'
     )
 
     parser.add_argument(
-        '--anchors', type=str,
+        '--anchors_path', type=str,
         help='path to anchor definitions'
     )
 
     parser.add_argument(
-        '--classes', type=str,
+        '--classes_path', type=str,
         help='path to class definitions'
     )
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        "--image_output_path", nargs='?', type=str, required=False,
+        "--image_output_path", default='', type=str, required=False,
         help="Image output path"
     )
     '''
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     )
 
     parser.add_argument(
-        "--video_output_path", nargs='?', type=str, required=False,
+        "--video_output_path", default='', type=str, required=False,
         help="Video output path"
     )
 
